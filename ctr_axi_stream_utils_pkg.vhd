@@ -7,6 +7,8 @@ use work.axi_stream_interface_pkg.all;
 package axi_stream_utils_pkg is
 
     type axi_stream_interface_array_t is array (natural range <>) of axi_stream_interface_t;
+    type axi_stream_req_array_t is array (natural range <>) of axi_stream_req_t;
+    type axi_stream_ack_array_t is array (natural range <>) of axi_stream_ack_t;
 
     pure function new_axi_stream_interface( data_width       : natural;
                                             user_width       : natural := 1
@@ -15,7 +17,13 @@ package axi_stream_utils_pkg is
     pure function new_axi_stream_interface( axis_cnf : axi_stream_interface_cnf_t ) return axi_stream_interface_t;
 
     pure function get_tdata_width(   i : axi_stream_interface_t ) return natural;
+    pure function get_tkeep_width(   i : axi_stream_interface_t ) return natural;
     pure function get_tuser_width(   i : axi_stream_interface_t ) return natural;
+    
+    pure function get_tdata_width(   i : axi_stream_interface_cnf_t ) return natural;
+    pure function get_tkeep_width(   i : axi_stream_interface_cnf_t ) return natural;
+    pure function get_tuser_width(   i : axi_stream_interface_cnf_t ) return natural;
+    
     pure function is_ready(          i : axi_stream_interface_t ) return boolean;
     pure function is_valid(          i : axi_stream_interface_t ) return boolean;
     pure function is_beat(           i : axi_stream_interface_t ) return boolean;
@@ -29,9 +37,9 @@ package body axi_stream_utils_pkg is
         data_width      : natural;
         user_width      : natural := 1
     ) return axi_stream_interface_t is
-        variable axi_stream_interface_t : axi_stream_interface_t( tdata(data_width-1   downto 0),
-                                                                  tkeep(data_width/8-1 downto 0),
-                                                                  tuser(user_width-1   downto 0 )); 
+        variable axi_stream_interface_t : axi_stream_interface_t( r.tdata(data_width-1   downto 0),
+                                                                  r.tkeep(data_width/8-1 downto 0),
+                                                                  r.tuser(user_width-1   downto 0 )); 
     begin 
         return axi_stream_interface_t;
     end;
@@ -42,24 +50,44 @@ package body axi_stream_utils_pkg is
                                          user_width => axis_cnf.user_width );
     end;
 
-    pure function get_tdata_width( i : axi_stream_interface_t ) return positive is
+    pure function get_tdata_width( i : axi_stream_interface_t ) return natural is
     begin
-        return i.tdata'length;
+        return get_tdata(i)'length;
     end function get_tdata_width;
 
-    pure function get_tuser_width( i : axi_stream_interface_t ) return positive is
+    pure function get_tdata_width( i : axi_stream_interface_cnf_t ) return natural is
     begin
-        return i.tuser'length;
+        return i.data_width;
+    end function get_tdata_width;
+
+    pure function get_tkeep_width( i : axi_stream_interface_t ) return natural is
+    begin
+        return get_tdata_width(i)/8;
+    end function get_tkeep_width;
+
+    pure function get_tkeep_width( i : axi_stream_interface_cnf_t ) return natural is
+    begin
+        return get_tdata_width(i)/8;
+    end function get_tkeep_width;
+
+    pure function get_tuser_width( i : axi_stream_interface_t ) return natural is
+    begin
+        return get_tuser(i)'length;
+    end function get_tuser_width;
+
+    pure function get_tuser_width( i : axi_stream_interface_cnf_t ) return natural is
+    begin
+        return i.user_width;
     end function get_tuser_width;
 
     pure function is_ready( i : axi_stream_interface_t ) return boolean is
     begin
-    	return i.tready = '1';
+    	return get_tready(i) = '1';
     end function is_ready;
 
     pure function is_valid( i : axi_stream_interface_t ) return boolean is
     begin
-    	return i.tvalid = '1';
+    	return get_tvalid(i) = '1';
     end function is_valid;
 
     pure function is_beat( i : axi_stream_interface_t ) return boolean is
@@ -69,7 +97,7 @@ package body axi_stream_utils_pkg is
 
     pure function is_last_beat( i : axi_stream_interface_t ) return boolean is
     begin
-    	return is_beat(i) and i.tlast = '1';
+    	return is_beat(i) and get_tlast(i) = '1';
     end function is_last_beat;
 
 end axi_stream_utils_pkg;
