@@ -9,7 +9,7 @@ package axi_stream_interface_pkg is
         user_width : natural;
     end record axi_stream_interface_cnf_t;
     constant AXIS_INTERFACE_CNF_ZERO_C : axi_stream_interface_cnf_t := axi_stream_interface_cnf_t'(
-        data_width => 64,
+        data_width => 128,
         user_width => 1
     );
 

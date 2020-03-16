@@ -40,11 +40,11 @@ package body axi_stream_utils_pkg is
         data_width      : natural;
         user_width      : natural := 1
     ) return axi_stream_interface_t is
-        variable axi_stream_interface_t : axi_stream_interface_t( r.tdata(data_width-1   downto 0),
-                                                                  r.tkeep(data_width/8-1 downto 0),
-                                                                  r.tuser(user_width-1   downto 0 ));
+        variable axi_stream_interface_v : axi_stream_interface_t(r(tdata(data_width-1   downto 0),
+                                                                   tkeep(data_width/8-1 downto 0),
+                                                                   tuser(user_width-1   downto 0 )));
     begin
-        return axi_stream_interface_t;
+        return axi_stream_interface_v;
     end;
 
     pure function new_axi_stream_interface( axis_cnf : axi_stream_interface_cnf_t ) return axi_stream_interface_t is
