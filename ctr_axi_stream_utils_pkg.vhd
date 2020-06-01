@@ -14,8 +14,10 @@ package axi_stream_utils_pkg is
                                             user_width       : natural := 1
     ) return axi_stream_interface_t;
 
+    pure function new_axi_stream_ack( i : axi_stream_interface_cnf_t ) return axi_stream_ack_t;
+    pure function new_axi_stream_req( i : axi_stream_interface_cnf_t ) return axi_stream_req_t;
     pure function new_axi_stream_interface( axis_cnf : axi_stream_interface_cnf_t ) return axi_stream_interface_t;
-
+    
     pure function get_tdata_width(   i : axi_stream_interface_t ) return natural;
     pure function get_tkeep_width(   i : axi_stream_interface_t ) return natural;
     pure function get_tuser_width(   i : axi_stream_interface_t ) return natural;
@@ -35,6 +37,26 @@ package axi_stream_utils_pkg is
 end axi_stream_utils_pkg;
 
 package body axi_stream_utils_pkg is
+
+    pure function new_axi_stream_ack( i : axi_stream_interface_cnf_t ) return axi_stream_ack_t is
+        variable axi_stream_ack_v : axi_stream_ack_t;
+    begin
+        axi_stream_ack_v.tready := '1';
+        return axi_stream_ack_v;
+    end;
+
+    pure function new_axi_stream_req( i : axi_stream_interface_cnf_t ) return axi_stream_req_t is
+        variable axi_stream_req_v : axi_stream_req_t(tdata(get_tdata_width(i)-1 downto 0),
+                                                     tkeep(get_tkeep_width(i)-1 downto 0),
+                                                     tuser(get_tuser_width(i)-1 downto 0));
+    begin
+        axi_stream_req_v.tvalid := '1';
+        axi_stream_req_v.tdata  := (others => '0');
+        axi_stream_req_v.tkeep  := (others => '1');
+        axi_stream_req_v.tlast  := '0';
+        axi_stream_req_v.tuser  := (others => '0');
+        return axi_stream_req_v;
+    end;
 
     pure function new_axi_stream_interface(
         data_width      : natural;
