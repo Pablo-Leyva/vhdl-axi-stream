@@ -18,6 +18,10 @@ package axi_stream_utils_pkg is
     pure function new_axi_stream_req( i : axi_stream_interface_cnf_t ) return axi_stream_req_t;
     pure function new_axi_stream_interface( axis_cnf : axi_stream_interface_cnf_t ) return axi_stream_interface_t;
     
+    pure function new_axi_stream_ack_array( i : axi_stream_interface_cnf_t; n : positive ) return axi_stream_ack_array_t;
+    pure function new_axi_stream_req_array( i : axi_stream_interface_cnf_t; n : positive ) return axi_stream_req_array_t;
+
+    
     pure function get_tdata_width(   i : axi_stream_interface_t ) return natural;
     pure function get_tkeep_width(   i : axi_stream_interface_t ) return natural;
     pure function get_tuser_width(   i : axi_stream_interface_t ) return natural;
@@ -73,6 +77,26 @@ package body axi_stream_utils_pkg is
     begin
         return new_axi_stream_interface( data_width => axis_cnf.data_width,
                                          user_width => axis_cnf.user_width );
+    end;
+
+    pure function new_axi_stream_ack_array( i : axi_stream_interface_cnf_t; n : positive ) return axi_stream_ack_array_t is
+        variable axi_stream_ack_array_v : axi_stream_ack_array_t(0 to n-1);
+    begin
+        for j in 0 to n-1 loop
+            axi_stream_ack_array_v(j) := new_axi_stream_ack(i);
+         end loop;
+        return axi_stream_ack_array_v;
+    end;
+
+    pure function new_axi_stream_req_array( i : axi_stream_interface_cnf_t; n : positive ) return axi_stream_req_array_t is
+        variable axi_stream_req_array_v : axi_stream_req_array_t(0 to n-1)(tdata(get_tdata_width(i)-1 downto 0),
+                                                                           tkeep(get_tkeep_width(i)-1 downto 0),
+                                                                           tuser(get_tuser_width(i)-1 downto 0));
+    begin
+        for j in 0 to n-1 loop
+            axi_stream_req_array_v(j) := new_axi_stream_req(i);
+         end loop;
+        return axi_stream_req_array_v;
     end;
 
     pure function get_tdata_width( i : axi_stream_interface_t ) return natural is
