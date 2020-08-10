@@ -152,6 +152,7 @@ package body axi_stream_utils_pkg is
     pure function all_interfaces_ready( ia : axi_stream_ack_array_t ) return boolean is
       variable all_interfaces_ready_v : boolean := true;
     begin
+      all_interfaces_ready_v := true;
       loop_interfaces : for i in 0 to ia'length-1 loop
           all_interfaces_ready_v := all_interfaces_ready_v and ia(i).tready='1';
       end loop;
@@ -161,6 +162,7 @@ package body axi_stream_utils_pkg is
     pure function all_interfaces_valid( ia : axi_stream_req_array_t ) return boolean is
       variable all_interfaces_valid_v : boolean := true;
     begin
+      all_interfaces_valid_v := true;
       loop_interfaces : for i in 0 to ia'length-1 loop
           all_interfaces_valid_v := all_interfaces_valid_v and ia(i).tvalid='1';
       end loop;
