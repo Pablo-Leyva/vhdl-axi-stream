@@ -17,11 +17,11 @@ package axi_stream_utils_pkg is
     pure function new_axi_stream_ack( i : axi_stream_interface_cnf_t ) return axi_stream_ack_t;
     pure function new_axi_stream_req( i : axi_stream_interface_cnf_t ) return axi_stream_req_t;
     pure function new_axi_stream_interface( axis_cnf : axi_stream_interface_cnf_t ) return axi_stream_interface_t;
-    
+
     pure function new_axi_stream_ack_array( i : axi_stream_interface_cnf_t; n : positive ) return axi_stream_ack_array_t;
     pure function new_axi_stream_req_array( i : axi_stream_interface_cnf_t; n : positive ) return axi_stream_req_array_t;
 
-    
+
     pure function get_tdata_width(   i : axi_stream_interface_t ) return natural;
     pure function get_tkeep_width(   i : axi_stream_interface_t ) return natural;
     pure function get_tuser_width(   i : axi_stream_interface_t ) return natural;
@@ -54,7 +54,7 @@ package body axi_stream_utils_pkg is
                                                      tkeep(get_tkeep_width(i)-1 downto 0),
                                                      tuser(get_tuser_width(i)-1 downto 0));
     begin
-        axi_stream_req_v.tvalid := '1';
+        axi_stream_req_v.tvalid := '0';
         axi_stream_req_v.tdata  := (others => '0');
         axi_stream_req_v.tkeep  := (others => '1');
         axi_stream_req_v.tlast  := '0';
