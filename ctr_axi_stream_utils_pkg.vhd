@@ -70,6 +70,12 @@ package body axi_stream_utils_pkg is
                                                                    tkeep(data_width/8-1 downto 0),
                                                                    tuser(user_width-1   downto 0 )));
     begin
+        axi_stream_interface_v.a.tready                         := '1';
+        axi_stream_interface_v.r.tvalid                         := '0';
+        axi_stream_interface_v.r.tdata(data_width-1 downto 0)   := (others => '0');
+        axi_stream_interface_v.r.tkeep(data_width/8-1 downto 0) := (others => '1');
+        axi_stream_interface_v.r.tlast                          := '0';
+        axi_stream_interface_v.r.tuser(user_width-1 downto 0 )  := (others => '0');
         return axi_stream_interface_v;
     end;
 
